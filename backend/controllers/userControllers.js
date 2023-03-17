@@ -18,7 +18,7 @@ const login = async (req, res, next) => {
         }
         const token = jwt.sign({ userId: user._id }, process.env.SECRET)
         req.user = user
-        res.status(200).json({ token })
+        res.status(200).json({ user,token })
     } catch (error) {
         res.status(400)
         next(error)
