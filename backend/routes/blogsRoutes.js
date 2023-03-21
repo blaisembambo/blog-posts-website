@@ -7,7 +7,7 @@ router.post('/set', setBlog)
 router.get('/blog', getBlogById)
 router.put('/update', updateBlog)
 router.delete('/delete', deleteBlog)
-router.post('/blogs', getUserBlogs)
+router.get('/blogs', getUserBlogs)
 
 
 module.exports = router

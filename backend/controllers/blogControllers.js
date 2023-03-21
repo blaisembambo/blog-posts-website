@@ -1,4 +1,5 @@
 const Blog = require('../models/blogModel')
+const User = require('../models/userModel')
 
 const setBlog = async (req, res, next) => {
     try {
@@ -7,6 +8,13 @@ const setBlog = async (req, res, next) => {
         if (!user || !title) {
             res.status(400)
             throw new Error(`Fournissez les informations obligatoires`)
+        }
+
+        const userExists = User.findById(user)
+
+        if (!userExists) {
+            res.status(400)
+            throw new Error(`L'utilisateur fourni n'existe pas`)
         }
 
         const blog = await Blog.create({ user, title, coverImage })
@@ -52,6 +60,13 @@ const getUserBlogs = async (req, res, next) => {
             throw new Error(`L'identifiant de l'utilisateur n'est pas fourni`)
         }
 
+        const userExists = User.findById(user)
+
+        if (!userExists) {
+            res.status(400)
+            throw new Error(`L'utilisateur fourni n'existe pas`)
+        }
+
         const userBlogs = await Blog.find({ user })
 
         if (!userBlogs) {
@@ -80,7 +95,7 @@ const updateBlog = async (req, res, next) => {
         const blog = await Blog.findById(id)
 
         if (!blog) {
-            res.status(404)
+            res.status(400)
             throw new Error(`L'identifiant fourni ne correspond à aucun blog`)
         }
 
@@ -112,15 +127,18 @@ const deleteBlog = async (req, res, next) => {
         const blog = await Blog.findById(id)
 
         if (!blog) {
-            res.status(404)
+            res.status(400)
             throw new Error(`L'identifiant fourni ne correspond à aucun blog`)
         }
         
         const deletedBlog = await Blog.findByIdAndRemove(id)
-
+        if (!deletedBlog) {
+            res.status(401)
+            throw new Error(`Vous n'êtes pas autorisé à effectuer cette action.`)
+        }
         res.status(200).json({
             message: `suppression réussie`,
-            id:id
+            id: id
         })
 
     } catch (error) {

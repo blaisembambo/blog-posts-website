@@ -1,4 +1,5 @@
 const Profile = require('../models/profileModel')
+const User = require('../models/userModel')
 
 
 const getUserProfile = async (req, res, next) => {
@@ -8,8 +9,14 @@ const getUserProfile = async (req, res, next) => {
             res.status(400)
             throw new Error(`l'id de l'utilisateur n'est pas fourni`)
         }
-        const profile = await Profile.findOne({ user })
 
+        const userExists = await User.findById(user)
+        if (!userExists) {
+            res.status(400)
+            throw new Error(`L'identifiant fourni ne correspond à aucun utilisateur`)
+        }
+
+        const profile = await Profile.findOne({ user })
         if (!profile) {
             res.status(401)
             throw new Error(`Vous n'êtes pas autorisé`)
@@ -27,8 +34,14 @@ const updateUserProfile = async (req, res, next) => {
             res.status(400)
             throw new Error(`l'id de l'utilisateur n'est pas fourni`)
         }
-        const profile = await Profile.findOne({ user })
 
+        const userExists = await User.findById(user)
+        if (!userExists) {
+            res.status(400)
+            throw new Error(`L'identifiant fourni ne correspond à aucun utilisateur`)
+        }
+        
+        const profile = await Profile.findOne({ user })
         if (!profile) {
             res.status(400)
             throw new Error(`Le profil n'existe pas`)

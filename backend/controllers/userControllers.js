@@ -44,7 +44,7 @@ const register = async (req, res, next) => {
 
         if (userExist) {
             res.status(400)
-            throw new Error(`Remplissez correctement tous les champs`)
+            throw new Error(`Choisissez un autre identifiant`)
         }
 
         const salt = await bcrypt.genSalt(10)
@@ -63,12 +63,6 @@ const register = async (req, res, next) => {
             res.status(400)
             throw new Error(`une erreur est survenue`)
         }
-
-
-        // res.json({
-        //     form_client: req.body,
-        //     token:req.headers.authorization
-        // })
 
     } catch (error) {
         res.status(400)
